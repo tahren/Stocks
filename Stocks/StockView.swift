@@ -84,7 +84,7 @@ func lastWeekday(date: Date) -> Date {
 }
 
 func updateIsRequired(today: Date, lastUpdateDate: Date?) -> Bool {
-    let todayFormatted = today.formatted(.dateTime.weekday().year().month().day())
+//    let todayFormatted = today.formatted(.dateTime.weekday().year().month().day())
     var tempDay = today
 
     for i in 0...6 {
