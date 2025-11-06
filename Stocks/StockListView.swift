@@ -8,11 +8,20 @@
 import SwiftUI
 
 struct StockListView: View {
+    var prices: [StockPrice]
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        List {
+            ForEach(prices.sorted { $0.timestamp > $1.timestamp }) { price in
+                HStack {
+                    Text(price.timestamp, format: .dateTime.weekday().year().month().day())
+                    Spacer()
+                    Text(price.price, format: .currency(code: "USD"))
+                }
+            }
+        }
     }
 }
 
 #Preview {
-    StockListView()
+    StockListView(prices: Stock.sample.prices)
 }

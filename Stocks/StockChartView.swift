@@ -6,13 +6,29 @@
 //
 
 import SwiftUI
+import Charts
 
 struct StockChartView: View {
+    var prices: [StockPrice]
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Chart(prices) { point in
+            LineMark(
+                x: .value("Date", point.timestamp),
+                y: .value("Price", point.price)
+            )
+            .foregroundStyle(.blue)
+            .interpolationMethod(.catmullRom)
+            AreaMark(
+                x: .value("Date", point.timestamp),
+                y: .value("Price", point.price)
+            )
+            .foregroundStyle(LinearGradient(colors: [.blue.opacity(0.3), .clear], startPoint: .top, endPoint: .bottom))
+        }
+        .chartYAxisLabel("Price")
+        .chartXAxisLabel("Date")
     }
 }
 
 #Preview {
-    StockChartView()
+    StockChartView(prices: Stock.sample.prices)
 }

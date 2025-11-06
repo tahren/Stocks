@@ -29,39 +29,6 @@ struct UpdateRecordsButton: View {
                 Text(isUpToDate ? "Up to date" : "Update records")
             }
         }
-        .buttonStyle(.bordered)
-        .buttonBorderShape(.capsule)
         .disabled(isLoading || isDisabled)
     }
-}
-
-#Preview {
-    struct PreviewWrapper: View {
-        @State private var loading1 = false
-        @State private var loading2 = false
-        
-        var body: some View {
-            VStack(spacing: 20) {
-                UpdateRecordsButton(
-                    isLoading: $loading1,
-                    isUpToDate: false,
-                    isDisabled: false,
-                    action: dummyAction
-                )
-                
-                UpdateRecordsButton(
-                    isLoading: $loading2,
-                    isUpToDate: true,
-                    isDisabled: false,
-                    action: dummyAction
-                )
-            }
-            .padding()
-        }
-        
-        func dummyAction() async {
-            try? await Task.sleep(nanoseconds: 1_000_000_000)
-        }
-    }
-    PreviewWrapper()
 }
