@@ -73,7 +73,7 @@ struct StockView: View {
 }
 
 func lastWeekday(date: Date) -> Date {
-    let tempComponents = Calendar.current.dateComponents([.weekday], from: date)
+    let tempComponents = Calendar.current.dateComponents([.weekday,], from: date)
     if tempComponents.weekday! == 7 {
         return date.addingTimeInterval(-86400)
     }
@@ -84,22 +84,30 @@ func lastWeekday(date: Date) -> Date {
 }
 
 func updateIsRequired(today: Date, lastUpdateDate: Date?) -> Bool {
-//    let todayFormatted = today.formatted(.dateTime.weekday().year().month().day())
-    var tempDay = today
+    print("Checking if update is required")
 
-    for i in 0...6 {
-        tempDay.addTimeInterval(86400)
-        let tempComponents = Calendar.current.dateComponents([.weekday], from: tempDay)
-        print("i:", i, tempDay, "Weekday:", tempComponents.weekday!, "Last weekday:", lastWeekday(date: tempDay).formatted(.dateTime.year().month().day().weekday()))
-    }
+    print("Today: \(dateString(from: today))")
+    let lastWeekdayFromToday = lastWeekday(date: today)
+    print("Last weekday: \(dateString(from: lastWeekdayFromToday))")
     
-    let todayComponents = Calendar.current.dateComponents([.year, .month, .day], from: today)
-    print("Today: \(todayComponents.year!)-\(todayComponents.month!)-\(todayComponents.day!)")
-
     if let lastUpdateDate {
-        // Format last timestamp in a readable way
-        let lastComponents = Calendar.current.dateComponents([.year, .month, .day], from: lastUpdateDate)
-        print("Last record date: \(lastComponents.year!)-\(lastComponents.month!)-\(lastComponents.day!)")
+        print("Last update date: \(dateString(from: lastUpdateDate))")
+    } else {
+        print("No records yet")
+        return true
+    }
+    print("")
+    print("lastWeekdayFromToday: \(lastWeekdayFromToday)")
+    print("lastUpdateDate: \(lastUpdateDate!)")
+    if !Calendar.current.isDate(lastWeekdayFromToday, inSameDayAs: lastUpdateDate!) {
+        return true
     }
     return false
+}
+
+func dateString(from date: Date) -> String {
+    let formatter = DateFormatter()
+    formatter.locale = Locale.current
+    formatter.dateFormat = "yyyy-M-d (EEEE)"
+    return formatter.string(from: date)
 }
