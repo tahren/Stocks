@@ -38,14 +38,25 @@ public final class Stock: Identifiable {
 
 public extension Stock {
     static let sample: Stock = {
-        let now = Date()
+        let calendar = Calendar.current
+        let tz = TimeZone.current
+        var comps = DateComponents()
+        comps.timeZone = tz
+        comps.year = 2025
+        comps.month = 11
+
+        comps.day = 5
+        let nov5 = calendar.date(from: comps) ?? Date()
+        comps.day = 6
+        let nov6 = calendar.date(from: comps) ?? Date()
+        comps.day = 7
+        let nov7 = calendar.date(from: comps) ?? Date()
+
         let prices: [StockPrice] = [
-            StockPrice(timestamp: now.addingTimeInterval(-3600 * 3), price: 148.32),
-            StockPrice(timestamp: now.addingTimeInterval(-3600 * 2), price: 169.10),
-            StockPrice(timestamp: now.addingTimeInterval(-3600 * 1), price: 150.24),
-            StockPrice(timestamp: now, price: 149.85)
+            StockPrice(timestamp: nov5, price: 148.32),
+            StockPrice(timestamp: nov6, price: 169.10),
+            StockPrice(timestamp: nov7, price: 150.24)
         ]
         return Stock(name: "AAPL", prices: prices)
     }()
 }
-

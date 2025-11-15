@@ -26,6 +26,7 @@ struct StockView: View {
                 Button {
                     if updateIsRequired(today: Date(), lastUpdateDate: prices.last?.timestamp) {
                         print("Update is required")
+                        generateAPIURL(from: prices.last?.timestamp, to: Date())
                     } else {
                         print("No update required")
                     }
@@ -33,14 +34,20 @@ struct StockView: View {
                     Text("Check")
                 }
                 Spacer()
-                UpdateRecordsButton(isLoading: $isLoading, isUpToDate: !stock.prices.isEmpty, isDisabled: !stock.prices.isEmpty, action: {
-                    print("Updating records now")
-                    do {
-                        try await updateStockPriceRecordsV2(baseAPI: baseAPIendpoint, stock: stock)
-                    } catch {
-                        print("Request failed with error: \(error)")
+                Button {
+                    Task { @MainActor in
+                        isLoading = true
+                        defer { isLoading = false }
+                        do {
+                            try await updateStockPriceRecordsV3(stock: stock, from: prices.last?.timestamp, to: Date())
+                        } catch {
+                            print("Request failed: \(error)")
+                        }
                     }
-                })
+                } label: {
+                    Text(updateButtonText(isLoading: isLoading, updateRequired: updateIsRequired(today: Date(), lastUpdateDate: prices.last?.timestamp)))
+                }
+                .disabled(isLoading || !updateIsRequired(today: Date(), lastUpdateDate: prices.last?.timestamp))
                 Spacer()
                 Button(role: .destructive) {
                     showDeleteConfirm = true
@@ -72,42 +79,12 @@ struct StockView: View {
         .modelContainer(for: Stock.self, inMemory: true)
 }
 
-func lastWeekday(date: Date) -> Date {
-    let tempComponents = Calendar.current.dateComponents([.weekday,], from: date)
-    if tempComponents.weekday! == 7 {
-        return date.addingTimeInterval(-86400)
+func updateButtonText(isLoading: Bool, updateRequired: Bool) -> String {
+    if isLoading {
+        return "Updating..."
     }
-    if tempComponents.weekday! == 1 {
-        return date.addingTimeInterval(-172800)
+    if !updateRequired {
+        return "Up to date"
     }
-    return date
-}
-
-func updateIsRequired(today: Date, lastUpdateDate: Date?) -> Bool {
-    print("Checking if update is required")
-
-    print("Today: \(dateString(from: today))")
-    let lastWeekdayFromToday = lastWeekday(date: today)
-    print("Last weekday: \(dateString(from: lastWeekdayFromToday))")
-    
-    if let lastUpdateDate {
-        print("Last update date: \(dateString(from: lastUpdateDate))")
-    } else {
-        print("No records yet")
-        return true
-    }
-    print("")
-    print("lastWeekdayFromToday: \(lastWeekdayFromToday)")
-    print("lastUpdateDate: \(lastUpdateDate!)")
-    if !Calendar.current.isDate(lastWeekdayFromToday, inSameDayAs: lastUpdateDate!) {
-        return true
-    }
-    return false
-}
-
-func dateString(from date: Date) -> String {
-    let formatter = DateFormatter()
-    formatter.locale = Locale.current
-    formatter.dateFormat = "yyyy-M-d (EEEE)"
-    return formatter.string(from: date)
+    return "Update records"
 }
