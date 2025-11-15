@@ -14,6 +14,6 @@ struct StocksApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: [Stock.self])
+        .modelContainer(for: [Stock.self, StockHolding.self])
     }
 }
