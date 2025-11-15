@@ -67,7 +67,6 @@ struct StockView: View {
             }
             .buttonStyle(.bordered)
             .buttonBorderShape(.capsule)
-
         }
         .padding()
     }
