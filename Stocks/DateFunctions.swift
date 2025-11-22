@@ -55,3 +55,12 @@ func getWeekday(date: Date) -> String {
     formatter.setLocalizedDateFormatFromTemplate("EEEE")
     return formatter.string(from: date)
 }
+
+/// Parses dates like "31 Jan 2016" into Date using a stable POSIX formatter.
+func parseHoldingDate(_ string: String) -> Date {
+    let formatter = DateFormatter()
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.timeZone = TimeZone(secondsFromGMT: 0)
+    formatter.dateFormat = "dd MMM yyyy"
+    return formatter.date(from: string)!
+}

@@ -70,7 +70,7 @@ struct StockChartView: View {
 
                                 // Value bubble above the point
                                 VStack(alignment: .leading, spacing: 2) {
-                                    Text(price, format: .number.precision(.fractionLength(2)))
+                                    Text(price, format: .currency(code: "USD"))
                                     Text(date, format: .dateTime.year().month().day())
                                 }
                                 .font(.caption)

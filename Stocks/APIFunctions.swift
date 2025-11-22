@@ -182,30 +182,16 @@ func updateStockPriceRecords(stock: Stock) async throws {
 }
 
 func updateIsRequired(today: Date, lastUpdateDate: Date?) -> Bool {
-    print("Checking if update is required")
-    
     if let lastUpdateDate {
-        print("Last update date: \(dateString(from: lastUpdateDate, includeWeekday: true))")
     } else {
-        print("No records yet")
         return true
     }
-
-    print("Today: \(dateString(from: today, includeWeekday: true))")
-    
-    print("Next update date: \(dateString(from: nextWeekday(date: lastUpdateDate!), includeWeekday: true))")
     let lastWeekdayFromToday = lastWeekday(date: today)
-    print("Last weekday: \(dateString(from: lastWeekdayFromToday, includeWeekday: true))")
-
     if lastUpdateDate! > lastWeekdayFromToday {
-        print("Next update date is after today, so no update is needed")
         return false
     }
-    
     if !Calendar.current.isDate(lastWeekdayFromToday, inSameDayAs: lastUpdateDate!) {
-        print("Last updated date is not today, so an update is needed")
         return true
     }
-    print("Last updated date is today, so no update is needed")
     return false
 }

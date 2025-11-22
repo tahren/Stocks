@@ -24,17 +24,6 @@ struct StockView: View {
             Text("Total records: \(stock.prices.count)")
             HStack {
                 Button {
-                    if updateIsRequired(today: Date(), lastUpdateDate: prices.last?.timestamp) {
-                        print("Update is required")
-                        generateAPIURL(from: prices.last?.timestamp, to: Date())
-                    } else {
-                        print("No update required")
-                    }
-                } label: {
-                    Text("Check")
-                }
-                Spacer()
-                Button {
                     Task { @MainActor in
                         isLoading = true
                         defer { isLoading = false }
