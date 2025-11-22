@@ -10,25 +10,25 @@ import SwiftUI
 struct PortfolioEntryView: View {
     var holding: StockHolding
     var body: some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading) {
+        VStack {
+            HStack {
                 Text(dateString(from: holding.date))
-                Text(String(describing: holding.type))
-            }
-            Spacer()
-            VStack {
+                Spacer()
                 Image(systemName: portfolioImage(holding: holding))
                     .foregroundStyle(portfolioTintColor(holding: holding))
+                Spacer()
+                Text(String(describing: holding.type))
             }
-            Spacer()
-            VStack(alignment: .trailing) {
+            HStack {
                 Text(holding.purchasePrice, format: .currency(code: "USD"))
+                Spacer()
                 Text("\(holding.numberOfShares, format: .number) shares")
+                Spacer()
                 Text(holding.cost, format: .currency(code: "USD"))
 
             }
         }
-        .font(.caption)
+        .font(.caption2)
         .padding(.horizontal)
     }
 }
